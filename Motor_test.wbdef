@@ -249,7 +249,7 @@
         <define key="M1_CURRENT_PROTECTION_DESTINATION" value="TIM_BKIN" />
         <define key="REGULATION_EXECUTION_RATE" value="1" />
         <define key="ADC_CLOCK_WB_DIV" value="1" />
-        <define key="M1_DBG_OPEN_LOOP_ENABLE" value="FALSE" />
+        <define key="M1_DBG_OPEN_LOOP_ENABLE" value="TRUE" />
         <define key="M1_POTENTIOMETER_ENABLE" value="FALSE" />
         <define key="POTENTIOMETER_READING" value="FALSE" />
         <define key="RTOS" value="FREERTOS" />
