@@ -1316,3 +1316,5 @@ Started STM32CubeMX for final c-code generation
 2023-03-13 13:45:42,318 DEBUG [LineInfo_to_exitCode.log_LineInfo] 2023-03-13 13:45:42,318 [INFO] ConfigFileManager:2587 - mx.scratch is deleted!
 2023-03-13 13:45:42,318 DEBUG [LineInfo_to_exitCode.log_LineInfo] 2023-03-13 13:45:42,318 [INFO] ProjectBuilder:4351 - Time for Generating toolchain IDE Files: 4565mS.
 2023-03-13 13:45:42,573 DEBUG [LineInfo_to_exitCode.log_LineInfo] 2023-03-13 13:45:42,572 [INFO] ProjectBuilder:2790 - Time for Copy CMSIS : 254mS.
+2023-03-13 13:45:42,832 DEBUG [LineInfo_to_exitCode.log_LineInfo] 2023-03-13 13:45:42,832 [INFO] ProjectBuilder:2790 - Time for Copy CMSIS : 255mS.
+2023-03-13 13:45:47,195 DEBUG [IOCDialogController.lambda$onClose$8] IOCGenerationDialog exists with return code 0
