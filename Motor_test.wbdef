@@ -72,7 +72,7 @@
         <define key="LDLQ_RATIO" value="1.000" />
         <define key="HALL_SENSORS_AVAILABLE" value="TRUE" />
         <define key="HALL_SENSORS_PLACEMENT" value="DEGREES_120" />
-        <define key="HALL_PHASE_SHIFT" value="117" />
+        <define key="HALL_PHASE_SHIFT" value="5" />
         <define key="ENCODER_AVAILABLE" value="TRUE" />
         <define key="ENCODER_PPR" value="400" />
         <define key="WB_UI_MAGNETIC_STRUCTURE" value="SM-PMSM" />
@@ -114,7 +114,7 @@
         <define key="HWV_PWM" value="DrivingHighAndLowSides" />
         <define key="OVERMODULATION" value="FALSE" />
         <define key="DISCONTINUOUS_PWM" value="FALSE" />
-        <define key="DEFAULT_CONTROL_MODE" value="STC_TORQUE_MODE" />
+        <define key="DEFAULT_CONTROL_MODE" value="STC_SPEED_MODE" />
         <define key="MTPA_ENABLING" value="DISABLE" />
         <define key="FEED_FORWARD_CURRENT_REG_ENABLING" value="DISABLE" />
         <define key="TF_KPDIV" value="256" />

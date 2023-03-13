@@ -178,7 +178,8 @@ __weak void MCboot( MCI_Handle_t* pMCIList[NBR_OF_MOTORS] )
     FOCVars[M1].Iqdref = STC_GetDefaultIqdref(pSTC[M1]);
     FOCVars[M1].UserIdref = STC_GetDefaultIqdref(pSTC[M1]).d;
     MCI_Init(&Mci[M1], pSTC[M1], &FOCVars[M1],pwmcHandle[M1] );
-    MCI_ExecTorqueRamp(&Mci[M1], STC_GetDefaultIqdref(pSTC[M1]).q, 0);
+    MCI_ExecSpeedRamp(&Mci[M1],
+    STC_GetMecSpeedRefUnitDefault(pSTC[M1]),0); /*First command to STC*/
     pMCIList[M1] = &Mci[M1];
 
     /* Applicative hook in MCBoot() */
