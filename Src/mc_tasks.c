@@ -94,6 +94,8 @@ bool TSK_StopPermanencyTimeHasElapsedM1(void);
 void TSK_SafetyTask_PWMOFF(uint8_t motor);
 
 /* USER CODE BEGIN Private Functions */
+void Set_Rotating_Voltage(int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valphabeta);
+void Set_Phase_V(int16_t amp, int16_t theta, alphabeta_t *Valphabeta);
 
 /**
  * @brief Set rotating output voltage with certain amplitude and rotating speed.
@@ -102,7 +104,7 @@ void TSK_SafetyTask_PWMOFF(uint8_t motor);
  * @param Valphabeta
  * @retval void
  */
-void Set_Rotating_Voltage{int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valphabeta}
+void Set_Rotating_Voltage(int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valphabeta)
 {
   int16_t EIspeed;
   EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
@@ -128,8 +130,8 @@ void Set_Phase_V(int16_t amp, int16_t theta, alphabeta_t *Valphabeta)
   Local_Vector_Components = MCM_Trig_Functions(theta);
   alpha_tmp = amp * ((int32_t)Local_Vector_Components.hCos);
   beta_tmp = amp * ((int32_t)Local_Vector_Components.hSin);
-  Valphabeta.alpha = (int16_t)(alpha_tmp >> 15);
-  Valphabeta.beta = (int16_t)(beta_tmp >> 15)
+  Valphabeta->alpha = (int16_t)(alpha_tmp >> 15);
+  Valphabeta->beta = (int16_t)(beta_tmp >> 15);
 }
 /* USER CODE END Private Functions */
 
@@ -780,8 +782,9 @@ inline uint16_t FOC_CurrControllerM1(void)
   Vqd = Circle_Limitation(&CircleLimitationM1, Vqd);
   hElAngle += SPD_GetInstElSpeedDpp(speedHandle) * REV_PARK_ANGLE_COMPENSATION_FACTOR;
   //  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
-  Valphabeta.alpha = -5000;
-  Valphabeta.beta = 8660;
+  // Valphabeta.alpha = -5000;
+  // Valphabeta.beta = 8660;
+  Set_Rotating_Voltage(10, 10000, &Valphabeta);
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
 
   FOCVars[M1].Vqd = Vqd;
