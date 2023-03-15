@@ -746,7 +746,9 @@ inline uint16_t FOC_CurrControllerM1(void)
   Vqd.d = PI_Controller(pPIDId[M1], (int32_t)(FOCVars[M1].Iqdref.d) - Iqd.d);
   Vqd = Circle_Limitation(&CircleLimitationM1, Vqd);
   hElAngle += SPD_GetInstElSpeedDpp(speedHandle)*REV_PARK_ANGLE_COMPENSATION_FACTOR;
-  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
+//  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
+  Valphabeta.alpha = -5000;
+  Valphabeta.beta = 8660;
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
 
   FOCVars[M1].Vqd = Vqd;
@@ -757,6 +759,17 @@ inline uint16_t FOC_CurrControllerM1(void)
   FOCVars[M1].hElAngle = hElAngle;
 
   return(hCodeError);
+}
+
+/**
+  * @brief Set the phase voltage at certain amplitude and phase.
+  * @param the unit of amp is Volt.
+  * @param the unit of phase is in degree, difference with phase a.
+  * @retval no return
+  */
+void Set_Phase_V(int16_t amp, int16_t phase, alphabeta_t *Valphabeta)
+{
+
 }
 
 /**
