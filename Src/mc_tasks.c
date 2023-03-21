@@ -128,8 +128,8 @@ void Set_Phase_V(int16_t amp, alphabeta_t *Valphabeta)
   int32_t beta_tmp;
   Trig_Components Local_Vector_Components;
   Local_Vector_Components = MCM_Trig_Functions(hVolAngle);
-  alpha_tmp = 2 / 3 * amp * ((int32_t)Local_Vector_Components.hCos);
-  beta_tmp = 2 / 3 * amp * ((int32_t)Local_Vector_Components.hSin);
+  alpha_tmp = (int32_t)(2 * amp * ((int32_t)Local_Vector_Components.hCos) / 3);
+  beta_tmp = (int32_t)(2 * amp * ((int32_t)Local_Vector_Components.hSin) / 3);
   Valphabeta->alpha = (int16_t)(alpha_tmp >> 15);
   Valphabeta->beta = (int16_t)(beta_tmp >> 15);
   // Circle_Limitation(&CircleLimitationM1, Valphabeta);
@@ -824,7 +824,7 @@ inline uint16_t FOC_CurrControllerM1(void)
   // Valphabeta.alpha = -5000;
   // Valphabeta.beta = 8660;
   Set_Rotating_Voltage(10, 10000, &Valphabeta);
-//  Vqd = Covert_Phases2LL(10000);
+  Vqd = Covert_Phases2LL(10000);
 
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
 
