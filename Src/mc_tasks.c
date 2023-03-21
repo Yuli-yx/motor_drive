@@ -95,7 +95,7 @@ void TSK_SafetyTask_PWMOFF(uint8_t motor);
 
 /* USER CODE BEGIN Private Functions */
 void Set_Rotating_Voltage(int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valphabeta);
-void Set_Phase_V(int16_t amp, int16_t theta, alphabeta_t *Valphabeta);
+void Set_Phase_V(int16_t amp, alphabeta_t *Valphabeta);
 
 /**
  * @brief Set rotating output voltage with certain amplitude and rotating speed.
@@ -110,7 +110,7 @@ void Set_Rotating_Voltage(int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valph
   EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
                       (SPEED_UNIT * (int32_t)HALL_M1._Super.hMeasurementFrequency));
   hVolAngle += EIspeed;
-  Set_Phase_V(amp, hVolAngle, Valphabeta);
+  Set_Phase_V(amp, Valphabeta);
 }
 
 /**
@@ -122,17 +122,56 @@ void Set_Rotating_Voltage(int16_t vMecSpeedUnit, int16_t amp, alphabeta_t *Valph
  * @param Valphabeta unit of phase is in degree, difference with phase a.
  * @retval void
  */
-void Set_Phase_V(int16_t amp, int16_t theta, alphabeta_t *Valphabeta)
+void Set_Phase_V(int16_t amp, alphabeta_t *Valphabeta)
 {
   int32_t alpha_tmp;
   int32_t beta_tmp;
   Trig_Components Local_Vector_Components;
-  Local_Vector_Components = MCM_Trig_Functions(theta);
-  alpha_tmp = amp * ((int32_t)Local_Vector_Components.hCos);
-  beta_tmp = amp * ((int32_t)Local_Vector_Components.hSin);
+  Local_Vector_Components = MCM_Trig_Functions(hVolAngle);
+  alpha_tmp = 2 / 3 * amp * ((int32_t)Local_Vector_Components.hCos);
+  beta_tmp = 2 / 3 * amp * ((int32_t)Local_Vector_Components.hSin);
   Valphabeta->alpha = (int16_t)(alpha_tmp >> 15);
   Valphabeta->beta = (int16_t)(beta_tmp >> 15);
+  // Circle_Limitation(&CircleLimitationM1, Valphabeta);
 }
+
+/**
+ * @brief convert the voltage vector to line voltage.
+ * Um = amp
+ * U = Um * e^(j*theta)
+ * Ua = 2/3 * Um*cos(theta)
+ * Ub = 2/3 * Um*cos(theta - 2/3 pi)
+ * Uc = 2/3 * Um*cos(theta + 2/3 pi)
+ * Uab = Ua - Ub = -2sqrt(3)/3 * sin(theta - pi/3)
+ * Ubc = Ub - Uc = -2sqrt(3)/3 * sin(theta)
+ * @param amp
+ * @param theta
+ * @return Ull.q = Uab, Ull.d = Ubc
+ */
+qd_t Covert_Phases2LL(const int16_t amp)
+{
+  int16_t theta_ab;
+  int16_t theta_bc;
+  int32_t sin_ab;
+  int32_t sin_bc;
+  int16_t Volt_tmp;
+  qd_t Ull;
+  double sqrt3 = 1.73205081;
+  Trig_Components Local_Vector_Components_ab, Local_Vector_Components_bc;
+  theta_ab = (int16_t)(hVolAngle - (int16_t)(30 * (int32_t)HALL_M1._Super.DPPConvFactor / 360));
+  theta_bc = hVolAngle;
+  Local_Vector_Components_ab = MCM_Trig_Functions(theta_ab);
+  Local_Vector_Components_bc = MCM_Trig_Functions(theta_bc);
+  sin_ab = Local_Vector_Components_ab.hSin;
+  sin_bc = Local_Vector_Components_bc.hSin;
+  Volt_tmp = (int16_t)(-2 * sqrt3 / 3 * amp);
+
+  Ull.q = (int16_t)((Volt_tmp * sin_ab) >> 15);
+  Ull.d = (int16_t)((Volt_tmp * sin_bc) >> 15);
+
+  return Ull;
+}
+
 /* USER CODE END Private Functions */
 
 /**
@@ -785,6 +824,8 @@ inline uint16_t FOC_CurrControllerM1(void)
   // Valphabeta.alpha = -5000;
   // Valphabeta.beta = 8660;
   Set_Rotating_Voltage(10, 10000, &Valphabeta);
+//  Vqd = Covert_Phases2LL(10000);
+
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
 
   FOCVars[M1].Vqd = Vqd;
