@@ -829,6 +829,7 @@ __weak int16_t MCI_GetImposedMotorDirection(MCI_Handle_t *pHandle)
           retVal = -1;
         }
         break;
+
       default:
         break;
     }

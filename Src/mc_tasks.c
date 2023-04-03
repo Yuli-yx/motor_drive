@@ -1,28 +1,28 @@
 
 /**
- ******************************************************************************
- * @file    mc_tasks.c
- * @author  Motor Control SDK Team, ST Microelectronics
- * @brief   This file implements tasks definition
- *
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
- * All rights reserved.</center></h2>
- *
- * This software component is licensed by ST under Ultimate Liberty license
- * SLA0044, the "License"; You may not use this file except in compliance with
- * the License. You may obtain a copy of the License at:
- *                             www.st.com/SLA0044
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file    mc_tasks.c
+  * @author  Motor Control SDK Team, ST Microelectronics
+  * @brief   This file implements tasks definition
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                             www.st.com/SLA0044
+  *
+  ******************************************************************************
+  */
 
 /* Includes ------------------------------------------------------------------*/
-// cstat -MISRAC2012-Rule-21.1
+//cstat -MISRAC2012-Rule-21.1
 #include "main.h"
-// cstat +MISRAC2012-Rule-21.1
+//cstat +MISRAC2012-Rule-21.1
 #include "mc_type.h"
 #include "mc_math.h"
 #include "motorcontrol.h"
@@ -58,17 +58,17 @@
 #define STOPPERMANENCY_TICKS2 (uint16_t)((SYS_TICK_FREQUENCY * STOPPERMANENCY_MS2) / ((uint16_t)1000))
 
 /* USER CODE END Private define */
-#define VBUS_TEMP_ERR_MASK (MC_OVER_VOLT | MC_UNDER_VOLT | MC_OVER_TEMP)
+#define VBUS_TEMP_ERR_MASK (MC_OVER_VOLT| MC_UNDER_VOLT| MC_OVER_TEMP)
 /* Private variables----------------------------------------------------------*/
 
 static FOCVars_t FOCVars[NBR_OF_MOTORS];
 
 static PWMC_Handle_t *pwmcHandle[NBR_OF_MOTORS];
-// cstat !MISRAC2012-Rule-8.9_a
-static RampExtMngr_Handle_t *pREMNG[NBR_OF_MOTORS]; /*!< Ramp manager used to modify the Iq ref
-                                                  during the start-up switch over.*/
+//cstat !MISRAC2012-Rule-8.9_a
+static RampExtMngr_Handle_t *pREMNG[NBR_OF_MOTORS];   /*!< Ramp manager used to modify the Iq ref
+                                                    during the start-up switch over.*/
 
-static uint16_t hMFTaskCounterM1 = 0; // cstat !MISRAC2012-Rule-8.9_a
+static uint16_t hMFTaskCounterM1 = 0; //cstat !MISRAC2012-Rule-8.9_a
 static volatile uint16_t hBootCapDelayCounterM1 = ((uint16_t)0);
 static volatile uint16_t hStopPermanencyCounterM1 = ((uint16_t)0);
 
@@ -84,8 +84,8 @@ void TSK_MediumFrequencyTaskM1(void);
 void FOC_Clear(uint8_t bMotor);
 void FOC_InitAdditionalMethods(uint8_t bMotor);
 void FOC_CalcCurrRef(uint8_t bMotor);
-void TSK_MF_StopProcessing(MCI_Handle_t *pHandle, uint8_t motor);
-MCI_Handle_t *GetMCI(uint8_t bMotor);
+void TSK_MF_StopProcessing(  MCI_Handle_t * pHandle, uint8_t motor);
+MCI_Handle_t * GetMCI(uint8_t bMotor);
 static uint16_t FOC_CurrControllerM1(void);
 void TSK_SetChargeBootCapDelayM1(uint16_t hTickCount);
 bool TSK_ChargeBootCapDelayHasElapsedM1(void);
@@ -173,16 +173,15 @@ qd_t Covert_Phases2LL(const int16_t amp)
 }
 
 /* USER CODE END Private Functions */
-
 /**
- * @brief  It initializes the whole MC core according to user defined
- *         parameters.
- * @param  pMCIList pointer to the vector of MCInterface objects that will be
- *         created and initialized. The vector must have length equal to the
- *         number of motor drives.
- * @retval None
- */
-__weak void MCboot(MCI_Handle_t *pMCIList[NBR_OF_MOTORS])
+  * @brief  It initializes the whole MC core according to user defined
+  *         parameters.
+  * @param  pMCIList pointer to the vector of MCInterface objects that will be
+  *         created and initialized. The vector must have length equal to the
+  *         number of motor drives.
+  * @retval None
+  */
+__weak void MCboot( MCI_Handle_t* pMCIList[NBR_OF_MOTORS] )
 {
   /* USER CODE BEGIN MCboot 0 */
 
@@ -195,7 +194,7 @@ __weak void MCboot(MCI_Handle_t *pMCIList[NBR_OF_MOTORS])
   else
   {
 
-    bMCBootCompleted = (uint8_t)0;
+    bMCBootCompleted = (uint8_t )0;
 
     /**********************************************************/
     /*    PWM and current sensing component initialization    */
@@ -220,12 +219,12 @@ __weak void MCboot(MCI_Handle_t *pMCIList[NBR_OF_MOTORS])
     /******************************************************/
     /*   Main speed sensor component initialization       */
     /******************************************************/
-    HALL_Init(&HALL_M1);
+    HALL_Init (&HALL_M1);
 
     /******************************************************/
     /*   Speed & torque component initialization          */
     /******************************************************/
-    STC_Init(pSTC[M1], &PIDSpeedHandle_M1, &HALL_M1._Super);
+    STC_Init(pSTC[M1],&PIDSpeedHandle_M1, &HALL_M1._Super);
 
     /********************************************************/
     /*   PID component initialization: current regulation   */
@@ -256,9 +255,8 @@ __weak void MCboot(MCI_Handle_t *pMCIList[NBR_OF_MOTORS])
     FOCVars[M1].bDriveInput = EXTERNAL;
     FOCVars[M1].Iqdref = STC_GetDefaultIqdref(pSTC[M1]);
     FOCVars[M1].UserIdref = STC_GetDefaultIqdref(pSTC[M1]).d;
-    MCI_Init(&Mci[M1], pSTC[M1], &FOCVars[M1], pwmcHandle[M1]);
-    MCI_ExecSpeedRamp(&Mci[M1],
-                      STC_GetMecSpeedRefUnitDefault(pSTC[M1]), 0); /*First command to STC*/
+    MCI_Init(&Mci[M1], pSTC[M1], &FOCVars[M1],pwmcHandle[M1] );
+    MCI_ExecTorqueRamp(&Mci[M1], STC_GetDefaultIqdref(pSTC[M1]).q, 0);
     pMCIList[M1] = &Mci[M1];
 
     /* Applicative hook in MCBoot() */
@@ -303,7 +301,7 @@ __weak void MC_RunMotorControlTasks(void)
  * @brief Performs stop process and update the state machine.This function
  *        shall be called only during medium frequency task
  */
-void TSK_MF_StopProcessing(MCI_Handle_t *pHandle, uint8_t motor)
+void TSK_MF_StopProcessing(  MCI_Handle_t * pHandle, uint8_t motor)
 {
   R3_2_SwitchOffPWM(pwmcHandle[motor]);
 
@@ -321,13 +319,13 @@ void TSK_MF_StopProcessing(MCI_Handle_t *pHandle, uint8_t motor)
  */
 __weak void MC_Scheduler(void)
 {
-  /* USER CODE BEGIN MC_Scheduler 0 */
+/* USER CODE BEGIN MC_Scheduler 0 */
 
-  /* USER CODE END MC_Scheduler 0 */
+/* USER CODE END MC_Scheduler 0 */
 
   if (((uint8_t)1) == bMCBootCompleted)
   {
-    if (hMFTaskCounterM1 > 0u)
+    if(hMFTaskCounterM1 > 0u)
     {
       hMFTaskCounterM1--;
     }
@@ -339,8 +337,8 @@ __weak void MC_Scheduler(void)
       MC_APP_PostMediumFrequencyHook_M1();
 
       MCP_Over_UartA.rxBuffer = MCP_Over_UartA.pTransportLayer->fRXPacketProcess(MCP_Over_UartA.pTransportLayer,
-                                                                                 &MCP_Over_UartA.rxLength);
-      if (0U == MCP_Over_UartA.rxBuffer)
+                                                                                &MCP_Over_UartA.rxLength);
+      if ( 0U == MCP_Over_UartA.rxBuffer)
       {
         /* Nothing to do */
       }
@@ -348,8 +346,8 @@ __weak void MC_Scheduler(void)
       {
         /* Synchronous answer */
         if (0U == MCP_Over_UartA.pTransportLayer->fGetBuffer(MCP_Over_UartA.pTransportLayer,
-                                                             (void **)&MCP_Over_UartA.txBuffer, // cstat !MISRAC2012-Rule-11.3
-                                                             MCTL_SYNC))
+                                                     (void **) &MCP_Over_UartA.txBuffer, //cstat !MISRAC2012-Rule-11.3
+                                                     MCTL_SYNC))
         {
           /* no buffer available to build the answer ... should not occur */
         }
@@ -367,11 +365,11 @@ __weak void MC_Scheduler(void)
       /* USER CODE END MC_Scheduler 1 */
       hMFTaskCounterM1 = (uint16_t)MF_TASK_OCCURENCE_TICKS;
     }
-    if (hBootCapDelayCounterM1 > 0U)
+    if(hBootCapDelayCounterM1 > 0U)
     {
       hBootCapDelayCounterM1--;
     }
-    if (hStopPermanencyCounterM1 > 0U)
+    if(hStopPermanencyCounterM1 > 0U)
     {
       hStopPermanencyCounterM1--;
     }
@@ -386,13 +384,13 @@ __weak void MC_Scheduler(void)
 }
 
 /**
- * @brief Executes medium frequency periodic Motor Control tasks
- *
- * This function performs some of the control duties on Motor 1 according to the
- * present state of its state machine. In particular, duties requiring a periodic
- * execution at a medium frequency rate (such as the speed controller for instance)
- * are executed here.
- */
+  * @brief Executes medium frequency periodic Motor Control tasks
+  *
+  * This function performs some of the control duties on Motor 1 according to the
+  * present state of its state machine. In particular, duties requiring a periodic
+  * execution at a medium frequency rate (such as the speed controller for instance)
+  * are executed here.
+  */
 __weak void TSK_MediumFrequencyTaskM1(void)
 {
   /* USER CODE BEGIN MediumFrequencyTask M1 0 */
@@ -409,160 +407,164 @@ __weak void TSK_MediumFrequencyTaskM1(void)
     {
       switch (Mci[M1].State)
       {
-      case IDLE:
-      {
-        if ((MCI_START == Mci[M1].DirectCommand) || (MCI_MEASURE_OFFSETS == Mci[M1].DirectCommand))
+        case IDLE:
         {
-
-          if (pwmcHandle[M1]->offsetCalibStatus == false)
+          if ((MCI_START == Mci[M1].DirectCommand) || (MCI_MEASURE_OFFSETS == Mci[M1].DirectCommand))
           {
-            PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_START);
-            Mci[M1].State = OFFSET_CALIB;
+
+           if (pwmcHandle[M1]->offsetCalibStatus == false)
+           {
+             PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_START);
+             Mci[M1].State = OFFSET_CALIB;
+           }
+           else
+           {
+             /* calibration already done. Enables only TIM channels */
+             pwmcHandle[M1]->OffCalibrWaitTimeCounter = 1u;
+             PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_EXEC);
+             R3_2_TurnOnLowSides(pwmcHandle[M1],M1_CHARGE_BOOT_CAP_DUTY_CYCLES);
+             TSK_SetChargeBootCapDelayM1(CHARGE_BOOT_CAP_TICKS);
+             Mci[M1].State = CHARGE_BOOT_CAP;
+
+           }
+
           }
           else
           {
-            /* calibration already done. Enables only TIM channels */
-            pwmcHandle[M1]->OffCalibrWaitTimeCounter = 1u;
-            PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_EXEC);
-            R3_2_TurnOnLowSides(pwmcHandle[M1], M1_CHARGE_BOOT_CAP_DUTY_CYCLES);
-            TSK_SetChargeBootCapDelayM1(CHARGE_BOOT_CAP_TICKS);
-            Mci[M1].State = CHARGE_BOOT_CAP;
+            /* nothing to be done, FW stays in IDLE state */
           }
+          break;
         }
-        else
-        {
-          /* nothing to be done, FW stays in IDLE state */
-        }
-        break;
-      }
 
-      case OFFSET_CALIB:
-      {
-        if (MCI_STOP == Mci[M1].DirectCommand)
-        {
-          TSK_MF_StopProcessing(&Mci[M1], M1);
-        }
-        else
-        {
-          if (PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_EXEC))
+        case OFFSET_CALIB:
           {
-            if (MCI_MEASURE_OFFSETS == Mci[M1].DirectCommand)
+            if (MCI_STOP == Mci[M1].DirectCommand)
             {
-              FOC_Clear(M1);
-              PQD_Clear(pMPM[M1]);
-              Mci[M1].DirectCommand = MCI_NO_COMMAND;
-              Mci[M1].State = IDLE;
+              TSK_MF_StopProcessing(&Mci[M1], M1);
             }
             else
             {
-              R3_2_TurnOnLowSides(pwmcHandle[M1], M1_CHARGE_BOOT_CAP_DUTY_CYCLES);
-              TSK_SetChargeBootCapDelayM1(CHARGE_BOOT_CAP_TICKS);
-              Mci[M1].State = CHARGE_BOOT_CAP;
+              if (PWMC_CurrentReadingCalibr(pwmcHandle[M1], CRC_EXEC))
+              {
+                if (MCI_MEASURE_OFFSETS == Mci[M1].DirectCommand)
+                {
+                  FOC_Clear(M1);
+                  PQD_Clear(pMPM[M1]);
+                  Mci[M1].DirectCommand = MCI_NO_COMMAND;
+                  Mci[M1].State = IDLE;
+                }
+                else
+                {
+                  R3_2_TurnOnLowSides(pwmcHandle[M1],M1_CHARGE_BOOT_CAP_DUTY_CYCLES);
+                  TSK_SetChargeBootCapDelayM1(CHARGE_BOOT_CAP_TICKS);
+                  Mci[M1].State = CHARGE_BOOT_CAP;
+
+                }
+              }
+              else
+              {
+                /* nothing to be done, FW waits for offset calibration to finish */
+              }
+            }
+            break;
+          }
+
+        case CHARGE_BOOT_CAP:
+        {
+          if (MCI_STOP == Mci[M1].DirectCommand)
+          {
+            TSK_MF_StopProcessing(&Mci[M1], M1);
+          }
+          else
+          {
+            if (TSK_ChargeBootCapDelayHasElapsedM1())
+            {
+              R3_2_SwitchOffPWM(pwmcHandle[M1]);
+              HALL_Clear(&HALL_M1);
+              FOC_Clear( M1 );
+
+              FOC_InitAdditionalMethods(M1);
+              FOC_CalcCurrRef(M1);
+              STC_ForceSpeedReferenceToCurrentSpeed( pSTC[M1]); /* Init the reference speed to current speed */
+              MCI_ExecBufferedCommands( &Mci[M1] ); /* Exec the speed ramp after changing of the speed sensor */
+              Mci[M1].State = RUN;
+
+              PWMC_SwitchOnPWM(pwmcHandle[M1]);
+            }
+            else
+            {
+              /* nothing to be done, FW waits for bootstrap capacitor to charge */
             }
           }
-          else
-          {
-            /* nothing to be done, FW waits for offset calibration to finish */
-          }
+          break;
         }
-        break;
-      }
 
-      case CHARGE_BOOT_CAP:
-      {
-        if (MCI_STOP == Mci[M1].DirectCommand)
+        case RUN:
         {
-          TSK_MF_StopProcessing(&Mci[M1], M1);
-        }
-        else
-        {
-          if (TSK_ChargeBootCapDelayHasElapsedM1())
+          if (MCI_STOP == Mci[M1].DirectCommand)
           {
-            R3_2_SwitchOffPWM(pwmcHandle[M1]);
-            HALL_Clear(&HALL_M1);
-            FOC_Clear(M1);
-
-            FOC_InitAdditionalMethods(M1);
-            FOC_CalcCurrRef(M1);
-            STC_ForceSpeedReferenceToCurrentSpeed(pSTC[M1]); /* Init the reference speed to current speed */
-            MCI_ExecBufferedCommands(&Mci[M1]);              /* Exec the speed ramp after changing of the speed sensor */
-            Mci[M1].State = RUN;
-
-            PWMC_SwitchOnPWM(pwmcHandle[M1]);
+            TSK_MF_StopProcessing(&Mci[M1], M1);
           }
           else
           {
-            /* nothing to be done, FW waits for bootstrap capacitor to charge */
+            /* USER CODE BEGIN MediumFrequencyTask M1 2 */
+
+            /* USER CODE END MediumFrequencyTask M1 2 */
+
+            MCI_ExecBufferedCommands(&Mci[M1]);
+
+              FOC_CalcCurrRef(M1);
+
+              if(!IsSpeedReliable)
+              {
+                MCI_FaultProcessing(&Mci[M1], MC_SPEED_FDBK, 0);
+              }
+
           }
+          break;
         }
-        break;
-      }
 
-      case RUN:
-      {
-        if (MCI_STOP == Mci[M1].DirectCommand)
+        case STOP:
         {
-          TSK_MF_StopProcessing(&Mci[M1], M1);
-        }
-        else
-        {
-          /* USER CODE BEGIN MediumFrequencyTask M1 2 */
-
-          /* USER CODE END MediumFrequencyTask M1 2 */
-
-          MCI_ExecBufferedCommands(&Mci[M1]);
-
-          FOC_CalcCurrRef(M1);
-
-          if (!IsSpeedReliable)
+          if (TSK_StopPermanencyTimeHasElapsedM1())
           {
-            MCI_FaultProcessing(&Mci[M1], MC_SPEED_FDBK, 0);
+
+            /* USER CODE BEGIN MediumFrequencyTask M1 5 */
+
+            /* USER CODE END MediumFrequencyTask M1 5 */
+            Mci[M1].DirectCommand = MCI_NO_COMMAND;
+            Mci[M1].State = IDLE;
+          }
+          else
+          {
+            /* nothing to do, FW waits for to stop */
+          }
+          break;
+        }
+
+        case FAULT_OVER:
+        {
+          if (MCI_ACK_FAULTS == Mci[M1].DirectCommand)
+          {
+            Mci[M1].DirectCommand = MCI_NO_COMMAND;
+            Mci[M1].State = IDLE;
+          }
+          else
+          {
+            /* nothing to do, FW stays in FAULT_OVER state until acknowledgement */
           }
         }
         break;
-      }
 
-      case STOP:
-      {
-        if (TSK_StopPermanencyTimeHasElapsedM1())
+        case FAULT_NOW:
         {
-
-          /* USER CODE BEGIN MediumFrequencyTask M1 5 */
-
-          /* USER CODE END MediumFrequencyTask M1 5 */
-          Mci[M1].DirectCommand = MCI_NO_COMMAND;
-          Mci[M1].State = IDLE;
-        }
-        else
-        {
-          /* nothing to do, FW waits for to stop */
+          Mci[M1].State = FAULT_OVER;
         }
         break;
-      }
 
-      case FAULT_OVER:
-      {
-        if (MCI_ACK_FAULTS == Mci[M1].DirectCommand)
-        {
-          Mci[M1].DirectCommand = MCI_NO_COMMAND;
-          Mci[M1].State = IDLE;
-        }
-        else
-        {
-          /* nothing to do, FW stays in FAULT_OVER state until acknowledgement */
-        }
-      }
-      break;
-
-      case FAULT_NOW:
-      {
-        Mci[M1].State = FAULT_OVER;
-      }
-      break;
-
-      default:
-        break;
-      }
+        default:
+          break;
+       }
     }
     else
     {
@@ -580,13 +582,13 @@ __weak void TSK_MediumFrequencyTaskM1(void)
 }
 
 /**
- * @brief  It re-initializes the current and voltage variables. Moreover
- *         it clears qd currents PI controllers, voltage sensor and SpeednTorque
- *         controller. It must be called before each motor restart.
- *         It does not clear speed sensor.
- * @param  bMotor related motor it can be M1 or M2
- * @retval none
- */
+  * @brief  It re-initializes the current and voltage variables. Moreover
+  *         it clears qd currents PI controllers, voltage sensor and SpeednTorque
+  *         controller. It must be called before each motor restart.
+  *         It does not clear speed sensor.
+  * @param  bMotor related motor it can be M1 or M2
+  * @retval none
+  */
 __weak void FOC_Clear(uint8_t bMotor)
 {
   /* USER CODE BEGIN FOC_Clear 0 */
@@ -621,35 +623,35 @@ __weak void FOC_Clear(uint8_t bMotor)
 }
 
 /**
- * @brief  Use this method to initialize additional methods (if any) in
- *         START_TO_RUN state
- * @param  bMotor related motor it can be M1 or M2
- * @retval none
- */
-__weak void FOC_InitAdditionalMethods(uint8_t bMotor) // cstat !RED-func-no-effect
+  * @brief  Use this method to initialize additional methods (if any) in
+  *         START_TO_RUN state
+  * @param  bMotor related motor it can be M1 or M2
+  * @retval none
+  */
+__weak void FOC_InitAdditionalMethods(uint8_t bMotor) //cstat !RED-func-no-effect
 {
-  if (M_NONE == bMotor)
-  {
-    /* Nothing to do */
-  }
-  else
-  {
-    /* USER CODE BEGIN FOC_InitAdditionalMethods 0 */
+    if (M_NONE == bMotor)
+    {
+      /* Nothing to do */
+    }
+    else
+    {
+  /* USER CODE BEGIN FOC_InitAdditionalMethods 0 */
 
-    /* USER CODE END FOC_InitAdditionalMethods 0 */
-  }
+  /* USER CODE END FOC_InitAdditionalMethods 0 */
+    }
 }
 
 /**
- * @brief  It computes the new values of Iqdref (current references on qd
- *         reference frame) based on the required electrical torque information
- *         provided by oTSC object (internally clocked).
- *         If implemented in the derived class it executes flux weakening and/or
- *         MTPA algorithm(s). It must be called with the periodicity specified
- *         in oTSC parameters
- * @param  bMotor related motor it can be M1 or M2
- * @retval none
- */
+  * @brief  It computes the new values of Iqdref (current references on qd
+  *         reference frame) based on the required electrical torque information
+  *         provided by oTSC object (internally clocked).
+  *         If implemented in the derived class it executes flux weakening and/or
+  *         MTPA algorithm(s). It must be called with the periodicity specified
+  *         in oTSC parameters
+  * @param  bMotor related motor it can be M1 or M2
+  * @retval none
+  */
 __weak void FOC_CalcCurrRef(uint8_t bMotor)
 {
 
@@ -660,6 +662,7 @@ __weak void FOC_CalcCurrRef(uint8_t bMotor)
   {
     FOCVars[bMotor].hTeref = STC_CalcTorqueReference(pSTC[bMotor]);
     FOCVars[bMotor].Iqdref.q = FOCVars[bMotor].hTeref;
+
   }
   else
   {
@@ -671,22 +674,22 @@ __weak void FOC_CalcCurrRef(uint8_t bMotor)
 }
 
 /**
- * @brief  It set a counter intended to be used for counting the delay required
- *         for drivers boot capacitors charging of motor 1
- * @param  hTickCount number of ticks to be counted
- * @retval void
- */
+  * @brief  It set a counter intended to be used for counting the delay required
+  *         for drivers boot capacitors charging of motor 1
+  * @param  hTickCount number of ticks to be counted
+  * @retval void
+  */
 __weak void TSK_SetChargeBootCapDelayM1(uint16_t hTickCount)
 {
-  hBootCapDelayCounterM1 = hTickCount;
+   hBootCapDelayCounterM1 = hTickCount;
 }
 
 /**
- * @brief  Use this function to know whether the time required to charge boot
- *         capacitors of motor 1 has elapsed
- * @param  none
- * @retval bool true if time has elapsed, false otherwise
- */
+  * @brief  Use this function to know whether the time required to charge boot
+  *         capacitors of motor 1 has elapsed
+  * @param  none
+  * @retval bool true if time has elapsed, false otherwise
+  */
 __weak bool TSK_ChargeBootCapDelayHasElapsedM1(void)
 {
   bool retVal = false;
@@ -698,22 +701,22 @@ __weak bool TSK_ChargeBootCapDelayHasElapsedM1(void)
 }
 
 /**
- * @brief  It set a counter intended to be used for counting the permanency
- *         time in STOP state of motor 1
- * @param  hTickCount number of ticks to be counted
- * @retval void
- */
+  * @brief  It set a counter intended to be used for counting the permanency
+  *         time in STOP state of motor 1
+  * @param  hTickCount number of ticks to be counted
+  * @retval void
+  */
 __weak void TSK_SetStopPermanencyTimeM1(uint16_t hTickCount)
 {
   hStopPermanencyCounterM1 = hTickCount;
 }
 
 /**
- * @brief  Use this function to know whether the permanency time in STOP state
- *         of motor 1 has elapsed
- * @param  none
- * @retval bool true if time is elapsed, false otherwise
- */
+  * @brief  Use this function to know whether the permanency time in STOP state
+  *         of motor 1 has elapsed
+  * @param  none
+  * @retval bool true if time is elapsed, false otherwise
+  */
 __weak bool TSK_StopPermanencyTimeHasElapsedM1(void)
 {
   bool retVal = false;
@@ -724,22 +727,22 @@ __weak bool TSK_StopPermanencyTimeHasElapsedM1(void)
   return (retVal);
 }
 
-#if defined(CCMRAM)
-#if defined(__ICCARM__)
+#if defined (CCMRAM)
+#if defined (__ICCARM__)
 #pragma location = ".ccmram"
-#elif defined(__CC_ARM) || defined(__GNUC__)
-__attribute__((section(".ccmram")))
+#elif defined (__CC_ARM) || defined(__GNUC__)
+__attribute__((section (".ccmram")))
 #endif
 #endif
 
 /**
- * @brief  Executes the Motor Control duties that require a high frequency rate and a precise timing
- *
- *  This is mainly the FOC current control loop. It is executed depending on the state of the Motor Control
- * subsystem (see the state machine(s)).
- *
- * @retval Number of the  motor instance which FOC loop was executed.
- */
+  * @brief  Executes the Motor Control duties that require a high frequency rate and a precise timing
+  *
+  *  This is mainly the FOC current control loop. It is executed depending on the state of the Motor Control
+  * subsystem (see the state machine(s)).
+  *
+  * @retval Number of the  motor instance which FOC loop was executed.
+  */
 __weak uint8_t TSK_HighFrequencyTask(void)
 {
   /* USER CODE BEGIN HighFrequencyTask 0 */
@@ -758,7 +761,7 @@ __weak uint8_t TSK_HighFrequencyTask(void)
   /* USER CODE BEGIN HighFrequencyTask SINGLEDRIVE_2 */
 
   /* USER CODE END HighFrequencyTask SINGLEDRIVE_2 */
-  if (hFOCreturn == MC_DURATION)
+  if(hFOCreturn == MC_DURATION)
   {
     MCI_FaultProcessing(&Mci[M1], MC_DURATION, 0);
   }
@@ -779,28 +782,28 @@ __weak uint8_t TSK_HighFrequencyTask(void)
   }
   else
   {
-    MCPA_dataLog(&MCPA_UART_A);
+    MCPA_dataLog (&MCPA_UART_A);
   }
 
   return (bMotorNbr);
 }
 
-#if defined(CCMRAM)
-#if defined(__ICCARM__)
+#if defined (CCMRAM)
+#if defined (__ICCARM__)
 #pragma location = ".ccmram"
-#elif defined(__CC_ARM) || defined(__GNUC__)
-__attribute__((section(".ccmram")))
+#elif defined (__CC_ARM) || defined(__GNUC__)
+__attribute__((section (".ccmram")))
 #endif
 #endif
 /**
- * @brief It executes the core of FOC drive that is the controllers for Iqd
- *        currents regulation. Reference frame transformations are carried out
- *        accordingly to the active speed sensor. It must be called periodically
- *        when new motor currents have been converted
- * @param this related object of class CFOC.
- * @retval int16_t It returns MC_NO_FAULTS if the FOC has been ended before
- *         next PWM Update event, MC_DURATION otherwise
- */
+  * @brief It executes the core of FOC drive that is the controllers for Iqd
+  *        currents regulation. Reference frame transformations are carried out
+  *        accordingly to the active speed sensor. It must be called periodically
+  *        when new motor currents have been converted
+  * @param this related object of class CFOC.
+  * @retval int16_t It returns MC_NO_FAULTS if the FOC has been ended before
+  *         next PWM Update event, MC_DURATION otherwise
+  */
 inline uint16_t FOC_CurrControllerM1(void)
 {
   qd_t Iqd, Vqd;
@@ -819,13 +822,8 @@ inline uint16_t FOC_CurrControllerM1(void)
   Vqd.q = PI_Controller(pPIDIq[M1], (int32_t)(FOCVars[M1].Iqdref.q) - Iqd.q);
   Vqd.d = PI_Controller(pPIDId[M1], (int32_t)(FOCVars[M1].Iqdref.d) - Iqd.d);
   Vqd = Circle_Limitation(&CircleLimitationM1, Vqd);
-  hElAngle += SPD_GetInstElSpeedDpp(speedHandle) * REV_PARK_ANGLE_COMPENSATION_FACTOR;
-  //  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
-  // Valphabeta.alpha = -5000;
-  // Valphabeta.beta = 8660;
-  Set_Rotating_Voltage(10, 10000, &Valphabeta);
-  Vqd = Covert_Phases2LL(10000);
-
+  hElAngle += SPD_GetInstElSpeedDpp(speedHandle)*REV_PARK_ANGLE_COMPENSATION_FACTOR;
+  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
 
   FOCVars[M1].Vqd = Vqd;
@@ -835,14 +833,14 @@ inline uint16_t FOC_CurrControllerM1(void)
   FOCVars[M1].Valphabeta = Valphabeta;
   FOCVars[M1].hElAngle = hElAngle;
 
-  return (hCodeError);
+  return(hCodeError);
 }
 
 /**
- * @brief  Executes safety checks (e.g. bus voltage and temperature) for all drive instances.
- *
- * Faults flags are updated here.
- */
+  * @brief  Executes safety checks (e.g. bus voltage and temperature) for all drive instances.
+  *
+  * Faults flags are updated here.
+  */
 __weak void TSK_SafetyTask(void)
 {
   /* USER CODE BEGIN TSK_SafetyTask 0 */
@@ -853,18 +851,18 @@ __weak void TSK_SafetyTask(void)
     TSK_SafetyTask_PWMOFF(M1);
     /* User conversion execution */
     RCM_ExecUserConv();
-    /* USER CODE BEGIN TSK_SafetyTask 1 */
+  /* USER CODE BEGIN TSK_SafetyTask 1 */
 
-    /* USER CODE END TSK_SafetyTask 1 */
+  /* USER CODE END TSK_SafetyTask 1 */
   }
 }
 
 /**
- * @brief  Safety task implementation if  MC.ON_OVER_VOLTAGE == TURN_OFF_PWM
- * @param  bMotor Motor reference number defined
- *         \link Motors_reference_number here \endlink
- * @retval None
- */
+  * @brief  Safety task implementation if  MC.ON_OVER_VOLTAGE == TURN_OFF_PWM
+  * @param  bMotor Motor reference number defined
+  *         \link Motors_reference_number here \endlink
+  * @retval None
+  */
 __weak void TSK_SafetyTask_PWMOFF(uint8_t bMotor)
 {
   /* USER CODE BEGIN TSK_SafetyTask_PWMOFF 0 */
@@ -876,7 +874,7 @@ __weak void TSK_SafetyTask_PWMOFF(uint8_t bMotor)
   CodeReturn |= errMask[bMotor] & NTC_CalcAvTemp(pTemperatureSensor[bMotor]); /* check for fault if FW protection is activated. It returns MC_OVER_TEMP or MC_NO_ERROR */
   CodeReturn |= PWMC_CheckOverCurrent(pwmcHandle[bMotor]);                    /* check for fault. It return MC_BREAK_IN or MC_NO_FAULTS
                                                                                  (for STM32F30x can return MC_OVER_VOLT in case of HW Overvoltage) */
-  if (M1 == bMotor)
+  if(M1 == bMotor)
   {
     CodeReturn |= errMask[bMotor] & RVBS_CalcAvVbus(&BusVoltageSensor_M1);
   }
@@ -887,10 +885,10 @@ __weak void TSK_SafetyTask_PWMOFF(uint8_t bMotor)
     PWMC_SwitchOffPWM(pwmcHandle[bMotor]);
     if (MCPA_UART_A.Mark != 0)
     {
-      MCPA_flushDataLog(&MCPA_UART_A);
+      MCPA_flushDataLog (&MCPA_UART_A);
     }
     FOC_Clear(bMotor);
-    PQD_Clear(pMPM[bMotor]); // cstat !MISRAC2012-Rule-11.3
+    PQD_Clear(pMPM[bMotor]); //cstat !MISRAC2012-Rule-11.3
     /* USER CODE BEGIN TSK_SafetyTask_PWMOFF 1 */
 
     /* USER CODE END TSK_SafetyTask_PWMOFF 1 */
@@ -906,17 +904,17 @@ __weak void TSK_SafetyTask_PWMOFF(uint8_t bMotor)
 }
 
 /**
- * @brief  This function returns the reference of the MCInterface relative to
- *         the selected drive.
- * @param  bMotor Motor reference number defined
- *         \link Motors_reference_number here \endlink
- * @retval MCI_Handle_t * Reference to MCInterface relative to the selected drive.
- *         Note: it can be MC_NULL if MCInterface of selected drive is not
- *         allocated.
- */
-__weak MCI_Handle_t *GetMCI(uint8_t bMotor)
+  * @brief  This function returns the reference of the MCInterface relative to
+  *         the selected drive.
+  * @param  bMotor Motor reference number defined
+  *         \link Motors_reference_number here \endlink
+  * @retval MCI_Handle_t * Reference to MCInterface relative to the selected drive.
+  *         Note: it can be MC_NULL if MCInterface of selected drive is not
+  *         allocated.
+  */
+__weak MCI_Handle_t * GetMCI(uint8_t bMotor)
 {
-  MCI_Handle_t *retVal = MC_NULL;
+  MCI_Handle_t * retVal = MC_NULL;
   if (bMotor < (uint8_t)NBR_OF_MOTORS)
   {
     retVal = &Mci[bMotor];
@@ -925,11 +923,11 @@ __weak MCI_Handle_t *GetMCI(uint8_t bMotor)
 }
 
 /**
- * @brief  Puts the Motor Control subsystem in in safety conditions on a Hard Fault
- *
- *  This function is to be executed when a general hardware failure has been detected
- * by the microcontroller and is used to put the system in safety condition.
- */
+  * @brief  Puts the Motor Control subsystem in in safety conditions on a Hard Fault
+  *
+  *  This function is to be executed when a general hardware failure has been detected
+  * by the microcontroller and is used to put the system in safety condition.
+  */
 __weak void TSK_HardwareFaultTask(void)
 {
   /* USER CODE BEGIN TSK_HardwareFaultTask 0 */
@@ -944,7 +942,7 @@ __weak void TSK_HardwareFaultTask(void)
 }
 
 /* startMediumFrequencyTask function */
-void startMediumFrequencyTask(void const *argument)
+void startMediumFrequencyTask(void const * argument)
 {
   /* USER CODE BEGIN MF task 1 */
   /* Infinite loop */
@@ -958,7 +956,7 @@ void startMediumFrequencyTask(void const *argument)
 }
 
 /* startSafetyTask function */
-void StartSafetyTask(void const *argument)
+void StartSafetyTask(void const * argument)
 {
   /* USER CODE BEGIN SF task 1 */
   /* Infinite loop */
@@ -971,9 +969,9 @@ void StartSafetyTask(void const *argument)
   /* USER CODE END SF task 1 */
 }
 
-__weak void UI_HandleStartStopButton_cb(void)
+__weak void UI_HandleStartStopButton_cb (void)
 {
-  /* USER CODE BEGIN START_STOP_BTN */
+/* USER CODE BEGIN START_STOP_BTN */
   if (IDLE == MC_GetSTMStateMotor1())
   {
     /* Ramp parameters should be tuned for the actual motor */
@@ -983,29 +981,29 @@ __weak void UI_HandleStartStopButton_cb(void)
   {
     (void)MC_StopMotor1();
   }
-  /* USER CODE END START_STOP_BTN */
+/* USER CODE END START_STOP_BTN */
 }
 
-/**
- * @brief  Locks GPIO pins used for Motor Control to prevent accidental reconfiguration
- */
-__weak void mc_lock_pins(void)
+ /**
+  * @brief  Locks GPIO pins used for Motor Control to prevent accidental reconfiguration
+  */
+__weak void mc_lock_pins (void)
 {
-  LL_GPIO_LockPin(M1_CURR_AMPL_W_GPIO_Port, M1_CURR_AMPL_W_Pin);
-  LL_GPIO_LockPin(M1_HALL_H1_GPIO_Port, M1_HALL_H1_Pin);
-  LL_GPIO_LockPin(M1_HALL_H2_GPIO_Port, M1_HALL_H2_Pin);
-  LL_GPIO_LockPin(M1_HALL_H3_GPIO_Port, M1_HALL_H3_Pin);
-  LL_GPIO_LockPin(M1_PWM_UH_GPIO_Port, M1_PWM_UH_Pin);
-  LL_GPIO_LockPin(M1_PWM_VH_GPIO_Port, M1_PWM_VH_Pin);
-  LL_GPIO_LockPin(M1_OCP_GPIO_Port, M1_OCP_Pin);
-  LL_GPIO_LockPin(M1_PWM_VL_GPIO_Port, M1_PWM_VL_Pin);
-  LL_GPIO_LockPin(M1_PWM_WH_GPIO_Port, M1_PWM_WH_Pin);
-  LL_GPIO_LockPin(M1_PWM_WL_GPIO_Port, M1_PWM_WL_Pin);
-  LL_GPIO_LockPin(M1_PWM_UL_GPIO_Port, M1_PWM_UL_Pin);
-  LL_GPIO_LockPin(M1_TEMPERATURE_GPIO_Port, M1_TEMPERATURE_Pin);
-  LL_GPIO_LockPin(M1_BUS_VOLTAGE_GPIO_Port, M1_BUS_VOLTAGE_Pin);
-  LL_GPIO_LockPin(M1_CURR_AMPL_U_GPIO_Port, M1_CURR_AMPL_U_Pin);
-  LL_GPIO_LockPin(M1_CURR_AMPL_V_GPIO_Port, M1_CURR_AMPL_V_Pin);
+LL_GPIO_LockPin(M1_CURR_AMPL_W_GPIO_Port, M1_CURR_AMPL_W_Pin);
+LL_GPIO_LockPin(M1_HALL_H1_GPIO_Port, M1_HALL_H1_Pin);
+LL_GPIO_LockPin(M1_HALL_H2_GPIO_Port, M1_HALL_H2_Pin);
+LL_GPIO_LockPin(M1_HALL_H3_GPIO_Port, M1_HALL_H3_Pin);
+LL_GPIO_LockPin(M1_PWM_UH_GPIO_Port, M1_PWM_UH_Pin);
+LL_GPIO_LockPin(M1_PWM_VH_GPIO_Port, M1_PWM_VH_Pin);
+LL_GPIO_LockPin(M1_OCP_GPIO_Port, M1_OCP_Pin);
+LL_GPIO_LockPin(M1_PWM_VL_GPIO_Port, M1_PWM_VL_Pin);
+LL_GPIO_LockPin(M1_PWM_WH_GPIO_Port, M1_PWM_WH_Pin);
+LL_GPIO_LockPin(M1_PWM_WL_GPIO_Port, M1_PWM_WL_Pin);
+LL_GPIO_LockPin(M1_PWM_UL_GPIO_Port, M1_PWM_UL_Pin);
+LL_GPIO_LockPin(M1_TEMPERATURE_GPIO_Port, M1_TEMPERATURE_Pin);
+LL_GPIO_LockPin(M1_BUS_VOLTAGE_GPIO_Port, M1_BUS_VOLTAGE_Pin);
+LL_GPIO_LockPin(M1_CURR_AMPL_U_GPIO_Port, M1_CURR_AMPL_U_Pin);
+LL_GPIO_LockPin(M1_CURR_AMPL_V_GPIO_Port, M1_CURR_AMPL_V_Pin);
 }
 /* USER CODE BEGIN mc_task 0 */
 

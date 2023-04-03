@@ -11,7 +11,7 @@
         <define key="MCU_LINE" value="STM32G4x1" />
         <define key="SINGLEDRIVE" value="TRUE" />
         <define key="DRIVES_NUMBER_SELECTION" value="SINGLEDRIVE" />
-        <define key="MC_WORKBENCH_VERSION" value="6.1.0" />
+        <define key="MC_WORKBENCH_VERSION" value="6.1.1" />
         <define key="BOARD" value="NUCLEO-G431RB" />
         <define key="CTLBOARD_NAME" value="NUCLEO-G431RB" />
         <define key="ADC_REFERENCE_VOLTAGE" value="3.3" />
@@ -32,6 +32,10 @@
         <define key="MCP_USED" value="TRUE" />
         <define key="MCP_RX_SYNC_PAYLOAD_MAX" value="128" />
         <define key="MCP_TX_SYNC_PAYLOAD_MAX" value="128" />
+        <define key="MCP_DATALOG_USED" value="TRUE" />
+        <define key="MCP_DATALOG_OVER_ASPEP" value="TRUE" />
+        <define key="MCP_OVER_ASPEP" value="TRUE" />
+        <define key="MCP_ASPEP_OVER_UART" value="TRUE" />
         <define key="SERIAL_COMMUNICATION" value="ENABLE" />
         <define key="USART_SELECTION" value="USE_USART2" />
         <define key="USART_TX_GPIO_PORT" value="GPIOA" />
@@ -45,18 +49,14 @@
         <define key="MCP_DATALOG_OVER_UART_A" value="TRUE" />
         <define key="MCP_DATALOG_PAYLOAD_MAX_UART_A" value="2048" />
         <define key="MCP_DATALOG_OVER_UART_A_SIGNALS" value="10" />
+        <define key="MCP_IRQ_HANDLER_UART_A" value="USART2_IRQHandler" />
         <define key="MCP_DMA_RX_UART_A" value="DMA1" />
         <define key="MCP_DMACH_RX_UART_A" value="1" />
         <define key="MCP_IRQ_HANDLER_DMA_RX_UART_A" value="DMA1_Channel1_IRQHandler" />
         <define key="MCP_DMA_TX_UART_A" value="DMA1" />
         <define key="MCP_DMACH_TX_UART_A" value="2" />
-        <define key="MCP_IRQ_HANDLER_UART_A" value="USART2_IRQHandler" />
         <define key="MCP_OVER_UART_B" value="FALSE" />
         <define key="MCP_OVER_STLNK" value="FALSE" />
-        <define key="MCP_DATALOG_USED" value="TRUE" />
-        <define key="MCP_DATALOG_OVER_ASPEP" value="TRUE" />
-        <define key="MCP_OVER_ASPEP" value="TRUE" />
-        <define key="MCP_ASPEP_OVER_UART" value="TRUE" />
         <define key="DMA_FULL_REQS" value="[{'dma_request':'USART2_RX','channel':'DMA1_Channel1','mem_inc':'ENABLE','alignment':'BYTE','mode':'NORMAL','priority':'LOW','direction':'DMA_PERIPH_TO_MEMORY','irq_priority':3,'needToSet_irq':true,'irq_name_full':'DMA1_Channel1_IRQn','irq_name':'DMA1_Channel1'},{'dma_request':'USART2_TX','channel':'DMA1_Channel2','mem_inc':'ENABLE','alignment':'BYTE','mode':'NORMAL','priority':'LOW','direction':'DMA_MEMORY_TO_PERIPH','irq_priority':3,'needToSet_irq':false,'irq_name_full':'','irq_name':''}]" />
         <define key="MOTOR_TYPE" value="PMSM" />
         <define key="POLE_PAIR_NUM" value="2" />
@@ -73,7 +73,7 @@
         <define key="HALL_SENSORS_AVAILABLE" value="TRUE" />
         <define key="HALL_SENSORS_PLACEMENT" value="DEGREES_120" />
         <define key="HALL_PHASE_SHIFT" value="5" />
-        <define key="ENCODER_AVAILABLE" value="TRUE" />
+        <define key="ENCODER_AVAILABLE" value="FALSE" />
         <define key="ENCODER_PPR" value="400" />
         <define key="WB_UI_MAGNETIC_STRUCTURE" value="SM-PMSM" />
         <define key="WB_UI_MAX_CURRENT" value="5" />
@@ -114,7 +114,7 @@
         <define key="HWV_PWM" value="DrivingHighAndLowSides" />
         <define key="OVERMODULATION" value="FALSE" />
         <define key="DISCONTINUOUS_PWM" value="FALSE" />
-        <define key="DEFAULT_CONTROL_MODE" value="STC_SPEED_MODE" />
+        <define key="DEFAULT_CONTROL_MODE" value="STC_TORQUE_MODE" />
         <define key="MTPA_ENABLING" value="DISABLE" />
         <define key="FEED_FORWARD_CURRENT_REG_ENABLING" value="DISABLE" />
         <define key="TF_KPDIV" value="256" />
@@ -140,7 +140,7 @@
         <define key="PID_TORQUE_KP_DEFAULT" value="3170" />
         <define key="PID_TORQUE_KI_DEFAULT" value="2150" />
         <define key="PID_TORQUE_KD_DEFAULT" value="100" />
-        <define key="DEFAULT_TORQUE_COMPONENT" value="1028" />
+        <define key="DEFAULT_TORQUE_COMPONENT" value="0" />
         <define key="PID_FLUX_KP_DEFAULT" value="3170" />
         <define key="PID_FLUX_KI_DEFAULT" value="2150" />
         <define key="PID_FLUX_KD_DEFAULT" value="100" />
@@ -223,10 +223,14 @@
         <define key="PHASE_W_CURR_CHANNEL" value="ADC_Channel_6" />
         <define key="PHASE_W_GPIO_PORT" value="GPIOC" />
         <define key="PHASE_W_GPIO_PIN" value="GPIO_Pin_0" />
-        <define key="PHASE_V_CURR_ADC" value="ADC2" />
+        <define key="PHASE_V_CURR_ADC" value="ADC1" />
         <define key="PHASE_V_CURR_CHANNEL" value="ADC_Channel_7" />
         <define key="PHASE_V_GPIO_PORT" value="GPIOC" />
         <define key="PHASE_V_GPIO_PIN" value="GPIO_Pin_1" />
+        <define key="PHASE_V_S_CURR_ADC" value="ADC2" />
+        <define key="PHASE_V_S_CURR_CHANNEL" value="ADC_Channel_7" />
+        <define key="PHASE_V_S_GPIO_PORT" value="GPIOC" />
+        <define key="PHASE_V_S_GPIO_PIN" value="GPIO_Pin_1" />
         <define key="M1_CS_ADC_PHASE_SHARED" value="V" />
         <define key="M1_CS_ADC_U" value="ADC1" />
         <define key="M1_CS_CHANNEL_U" value="1" />
@@ -249,7 +253,7 @@
         <define key="M1_CURRENT_PROTECTION_DESTINATION" value="TIM_BKIN" />
         <define key="REGULATION_EXECUTION_RATE" value="1" />
         <define key="ADC_CLOCK_WB_DIV" value="1" />
-        <define key="M1_DBG_OPEN_LOOP_ENABLE" value="TRUE" />
+        <define key="M1_DBG_OPEN_LOOP_ENABLE" value="FALSE" />
         <define key="M1_POTENTIOMETER_ENABLE" value="FALSE" />
         <define key="POTENTIOMETER_READING" value="FALSE" />
         <define key="RTOS" value="FREERTOS" />

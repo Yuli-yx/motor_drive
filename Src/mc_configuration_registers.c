@@ -24,7 +24,7 @@
 #include "register_interface.h"
 #include "parameters_conversion.h"
 
-#define FIRMWARE_NAME_STR "ST MC SDK\tVer.6.1.0"
+#define FIRMWARE_NAME_STR "ST MC SDK\tVer.6.1.1"
 #define MAX_READABLE_CURRENT 3.3/(2*0.01*5.18)
 
 const char_t CTL_BOARD[] = "NUCLEO-G431RB";

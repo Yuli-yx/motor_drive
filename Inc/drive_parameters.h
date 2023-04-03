@@ -102,10 +102,10 @@
 #define IQMAX                          5144
 
 /* Default settings */
-#define DEFAULT_CONTROL_MODE           MCM_SPEED_MODE
+#define DEFAULT_CONTROL_MODE           MCM_TORQUE_MODE
 #define DEFAULT_TARGET_SPEED_RPM       3000
 #define DEFAULT_TARGET_SPEED_UNIT      (DEFAULT_TARGET_SPEED_RPM*SPEED_UNIT/U_RPM)
-#define DEFAULT_TORQUE_COMPONENT       1028
+#define DEFAULT_TORQUE_COMPONENT       0
 #define DEFAULT_FLUX_COMPONENT         0
 
 /**************************    FIRMWARE PROTECTIONS SECTION   *****************/
