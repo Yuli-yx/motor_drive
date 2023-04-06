@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020438  2**0
                   CONTENTS, READONLY
- 12 .debug_line   00048fb5  00000000  00000000  00020468  2**0
+ 12 .debug_line   00048fb0  00000000  00000000  00020468  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_info   0004d8a4  00000000  00000000  0006941d  2**0
+ 13 .debug_info   0004d8a4  00000000  00000000  00069418  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 0000932c  00000000  00000000  000b6cc1  2**0
+ 14 .debug_abbrev 0000932c  00000000  00000000  000b6cbc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00002028  00000000  00000000  000bfff0  2**3
+ 15 .debug_aranges 00002028  00000000  00000000  000bffe8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00108594  00000000  00000000  000c2018  2**0
+ 16 .debug_str    00108594  00000000  00000000  000c2010  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_ranges 00006a48  00000000  00000000  001ca5b0  2**3
+ 17 .debug_ranges 00006a30  00000000  00000000  001ca5a8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_loc    00032493  00000000  00000000  001d0ff8  2**0
+ 18 .debug_loc    00032495  00000000  00000000  001d0fd8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_macro  0000b3ce  00000000  00000000  0020348b  2**0
+ 19 .debug_macro  0000b3ce  00000000  00000000  0020346d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000050  00000000  00000000  0020e859  2**0
+ 20 .comment      00000050  00000000  00000000  0020e83b  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00006024  00000000  00000000  0020e8ac  2**2
+ 21 .debug_frame  00006024  00000000  00000000  0020e88c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -5397,122 +5397,120 @@ __weak uint8_t TSK_HighFrequencyTask(void)
   uint8_t bMotorNbr = 0;
 
   (void)HALL_CalcElAngle(&HALL_M1);
- 8002294:	4f5e      	ldr	r7, [pc, #376]	; (8002410 <TSK_HighFrequencyTask+0x180>)
+ 8002294:	f8df 81a8 	ldr.w	r8, [pc, #424]	; 8002440 <TSK_HighFrequencyTask+0x1b0>
   int16_t hElAngle;
   uint16_t hCodeError;
   SpeednPosFdbk_Handle_t *speedHandle;
   speedHandle = STC_GetSpeedSensor(pSTC[M1]);
   hElAngle = SPD_GetElAngle(speedHandle);
   PWMC_GetPhaseCurrents(pwmcHandle[M1], &Iab);
- 8002296:	4d5f      	ldr	r5, [pc, #380]	; (8002414 <TSK_HighFrequencyTask+0x184>)
+ 8002298:	4e5d      	ldr	r6, [pc, #372]	; (8002410 <TSK_HighFrequencyTask+0x180>)
   RCM_ReadOngoingConv();
   RCM_ExecNextConv();
   Ialphabeta = MCM_Clarke(Iab);
   Iqd = MCM_Park(Ialphabeta, hElAngle);
   Vqd.q = PI_Controller(pPIDIq[M1], (int32_t)(FOCVars[M1].Iqdref.q) - Iqd.q);
- 8002298:	4e5f      	ldr	r6, [pc, #380]	; (8002418 <TSK_HighFrequencyTask+0x188>)
+ 800229a:	4c5e      	ldr	r4, [pc, #376]	; (8002414 <TSK_HighFrequencyTask+0x184>)
 {
- 800229a:	b087      	sub	sp, #28
+ 800229c:	b087      	sub	sp, #28
   (void)HALL_CalcElAngle(&HALL_M1);
- 800229c:	4638      	mov	r0, r7
- 800229e:	f7fe fdff 	bl	8000ea0 <HALL_CalcElAngle>
+ 800229e:	4640      	mov	r0, r8
+ 80022a0:	f7fe fdfe 	bl	8000ea0 <HALL_CalcElAngle>
   speedHandle = STC_GetSpeedSensor(pSTC[M1]);
- 80022a2:	4b5e      	ldr	r3, [pc, #376]	; (800241c <TSK_HighFrequencyTask+0x18c>)
- 80022a4:	6818      	ldr	r0, [r3, #0]
- 80022a6:	f007 fe5b 	bl	8009f60 <STC_GetSpeedSensor>
- 80022aa:	4680      	mov	r8, r0
+ 80022a4:	4b5c      	ldr	r3, [pc, #368]	; (8002418 <TSK_HighFrequencyTask+0x188>)
+ 80022a6:	6818      	ldr	r0, [r3, #0]
+ 80022a8:	f007 fe5a 	bl	8009f60 <STC_GetSpeedSensor>
+ 80022ac:	4607      	mov	r7, r0
   hElAngle = SPD_GetElAngle(speedHandle);
- 80022ac:	f007 fdf6 	bl	8009e9c <SPD_GetElAngle>
+ 80022ae:	f007 fdf5 	bl	8009e9c <SPD_GetElAngle>
   PWMC_GetPhaseCurrents(pwmcHandle[M1], &Iab);
- 80022b0:	a902      	add	r1, sp, #8
+ 80022b2:	a902      	add	r1, sp, #8
   hElAngle = SPD_GetElAngle(speedHandle);
- 80022b2:	4604      	mov	r4, r0
+ 80022b4:	4605      	mov	r5, r0
   PWMC_GetPhaseCurrents(pwmcHandle[M1], &Iab);
- 80022b4:	6828      	ldr	r0, [r5, #0]
- 80022b6:	f000 f9f9 	bl	80026ac <PWMC_GetPhaseCurrents>
+ 80022b6:	6830      	ldr	r0, [r6, #0]
+ 80022b8:	f000 f9f8 	bl	80026ac <PWMC_GetPhaseCurrents>
   RCM_ReadOngoingConv();
- 80022ba:	f001 fc9f 	bl	8003bfc <RCM_ReadOngoingConv>
+ 80022bc:	f001 fc9e 	bl	8003bfc <RCM_ReadOngoingConv>
   RCM_ExecNextConv();
- 80022be:	f001 fc4d 	bl	8003b5c <RCM_ExecNextConv>
+ 80022c0:	f001 fc4c 	bl	8003b5c <RCM_ExecNextConv>
   Ialphabeta = MCM_Clarke(Iab);
- 80022c2:	9802      	ldr	r0, [sp, #8]
- 80022c4:	f7ff fd30 	bl	8001d28 <MCM_Clarke>
+ 80022c4:	9802      	ldr	r0, [sp, #8]
+ 80022c6:	f7ff fd2f 	bl	8001d28 <MCM_Clarke>
   Iqd = MCM_Park(Ialphabeta, hElAngle);
- 80022c8:	4621      	mov	r1, r4
+ 80022ca:	4629      	mov	r1, r5
   Ialphabeta = MCM_Clarke(Iab);
- 80022ca:	9003      	str	r0, [sp, #12]
+ 80022cc:	9003      	str	r0, [sp, #12]
   Iqd = MCM_Park(Ialphabeta, hElAngle);
- 80022cc:	f7ff fd6c 	bl	8001da8 <MCM_Park>
+ 80022ce:	f7ff fd6b 	bl	8001da8 <MCM_Park>
   Vqd.q = PI_Controller(pPIDIq[M1], (int32_t)(FOCVars[M1].Iqdref.q) - Iqd.q);
- 80022d0:	f9b6 3010 	ldrsh.w	r3, [r6, #16]
+ 80022d2:	f9b4 3010 	ldrsh.w	r3, [r4, #16]
   Iqd = MCM_Park(Ialphabeta, hElAngle);
- 80022d4:	9000      	str	r0, [sp, #0]
+ 80022d6:	9000      	str	r0, [sp, #0]
   Vqd.q = PI_Controller(pPIDIq[M1], (int32_t)(FOCVars[M1].Iqdref.q) - Iqd.q);
- 80022d6:	b201      	sxth	r1, r0
- 80022d8:	1a59      	subs	r1, r3, r1
- 80022da:	4b51      	ldr	r3, [pc, #324]	; (8002420 <TSK_HighFrequencyTask+0x190>)
- 80022dc:	6818      	ldr	r0, [r3, #0]
- 80022de:	f006 fd0f 	bl	8008d00 <PI_Controller>
+ 80022d8:	b201      	sxth	r1, r0
+ 80022da:	1a59      	subs	r1, r3, r1
+ 80022dc:	4b4f      	ldr	r3, [pc, #316]	; (800241c <TSK_HighFrequencyTask+0x18c>)
+ 80022de:	6818      	ldr	r0, [r3, #0]
+ 80022e0:	f006 fd0e 	bl	8008d00 <PI_Controller>
   Vqd.d = PI_Controller(pPIDId[M1], (int32_t)(FOCVars[M1].Iqdref.d) - Iqd.d);
- 80022e2:	f9bd 3002 	ldrsh.w	r3, [sp, #2]
- 80022e6:	f9b6 1012 	ldrsh.w	r1, [r6, #18]
- 80022ea:	1ac9      	subs	r1, r1, r3
- 80022ec:	4b4d      	ldr	r3, [pc, #308]	; (8002424 <TSK_HighFrequencyTask+0x194>)
+ 80022e4:	f9bd 3002 	ldrsh.w	r3, [sp, #2]
+ 80022e8:	f9b4 1012 	ldrsh.w	r1, [r4, #18]
+ 80022ec:	1ac9      	subs	r1, r1, r3
+ 80022ee:	4b4c      	ldr	r3, [pc, #304]	; (8002420 <TSK_HighFrequencyTask+0x190>)
   Vqd.q = PI_Controller(pPIDIq[M1], (int32_t)(FOCVars[M1].Iqdref.q) - Iqd.q);
- 80022ee:	4681      	mov	r9, r0
+ 80022f0:	4681      	mov	r9, r0
   Vqd.d = PI_Controller(pPIDId[M1], (int32_t)(FOCVars[M1].Iqdref.d) - Iqd.d);
- 80022f0:	6818      	ldr	r0, [r3, #0]
- 80022f2:	f006 fd05 	bl	8008d00 <PI_Controller>
+ 80022f2:	6818      	ldr	r0, [r3, #0]
+ 80022f4:	f006 fd04 	bl	8008d00 <PI_Controller>
   Vqd = Circle_Limitation(&CircleLimitationM1, Vqd);
- 80022f6:	f8ad 9004 	strh.w	r9, [sp, #4]
- 80022fa:	f8ad 0006 	strh.w	r0, [sp, #6]
- 80022fe:	9901      	ldr	r1, [sp, #4]
- 8002300:	4849      	ldr	r0, [pc, #292]	; (8002428 <TSK_HighFrequencyTask+0x198>)
- 8002302:	f006 fa09 	bl	8008718 <Circle_Limitation>
- 8002306:	9001      	str	r0, [sp, #4]
+ 80022f8:	f8ad 9004 	strh.w	r9, [sp, #4]
+ 80022fc:	f8ad 0006 	strh.w	r0, [sp, #6]
+ 8002300:	9901      	ldr	r1, [sp, #4]
+ 8002302:	4848      	ldr	r0, [pc, #288]	; (8002424 <TSK_HighFrequencyTask+0x194>)
+ 8002304:	f006 fa08 	bl	8008718 <Circle_Limitation>
+ 8002308:	9001      	str	r0, [sp, #4]
   hElAngle += SPD_GetInstElSpeedDpp(speedHandle) * REV_PARK_ANGLE_COMPENSATION_FACTOR;
- 8002308:	4640      	mov	r0, r8
- 800230a:	f007 fdcf 	bl	8009eac <SPD_GetInstElSpeedDpp>
-  EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
- 800230e:	69fb      	ldr	r3, [r7, #28]
+ 800230a:	4638      	mov	r0, r7
+ 800230c:	f007 fdce 	bl	8009eac <SPD_GetInstElSpeedDpp>
                       (SPEED_UNIT * (int32_t)HALL_M1._Super.hMeasurementFrequency));
- 8002310:	8b7a      	ldrh	r2, [r7, #26]
+ 8002310:	f8b8 301a 	ldrh.w	r3, [r8, #26]
   hVolAngle += EIspeed;
- 8002312:	f8df 812c 	ldr.w	r8, [pc, #300]	; 8002440 <TSK_HighFrequencyTask+0x1b0>
-  EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
+ 8002314:	4f44      	ldr	r7, [pc, #272]	; (8002428 <TSK_HighFrequencyTask+0x198>)
+                      (SPEED_UNIT * (int32_t)HALL_M1._Super.hMeasurementFrequency));
  8002316:	eb03 0383 	add.w	r3, r3, r3, lsl #2
-                      (SPEED_UNIT * (int32_t)HALL_M1._Super.hMeasurementFrequency));
- 800231a:	eb02 0282 	add.w	r2, r2, r2, lsl #2
- 800231e:	0052      	lsls	r2, r2, #1
-  EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
- 8002320:	005b      	lsls	r3, r3, #1
- 8002322:	fb93 f3f2 	sdiv	r3, r3, r2
   hVolAngle += EIspeed;
- 8002326:	f8b8 2000 	ldrh.w	r2, [r8]
- 800232a:	4413      	add	r3, r2
- 800232c:	b21b      	sxth	r3, r3
- 800232e:	f8a8 3000 	strh.w	r3, [r8]
+ 800231a:	8839      	ldrh	r1, [r7, #0]
+                      (SPEED_UNIT * (int32_t)HALL_M1._Super.hMeasurementFrequency));
+ 800231c:	005a      	lsls	r2, r3, #1
+  EIspeed = (int16_t)(vMecSpeedUnit * (int32_t)HALL_M1._Super.DPPConvFactor /
+ 800231e:	f8d8 301c 	ldr.w	r3, [r8, #28]
+ 8002322:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 8002326:	fb00 f303 	mul.w	r3, r0, r3
+ 800232a:	fb93 f3f2 	sdiv	r3, r3, r2
+  hVolAngle += EIspeed;
+ 800232e:	440b      	add	r3, r1
+ 8002330:	b21b      	sxth	r3, r3
+ 8002332:	803b      	strh	r3, [r7, #0]
   Local_Vector_Components = MCM_Trig_Functions(hVolAngle);
- 8002332:	f8b8 0000 	ldrh.w	r0, [r8]
+ 8002334:	8838      	ldrh	r0, [r7, #0]
  8002336:	b200      	sxth	r0, r0
  8002338:	f7ff fd20 	bl	8001d7c <MCM_Trig_Functions>
   theta_ab = (int16_t)(hVolAngle - (int16_t)(30 * (int32_t)HALL_M1._Super.DPPConvFactor / 360));
- 800233c:	69fa      	ldr	r2, [r7, #28]
+ 800233c:	f8d8 201c 	ldr.w	r2, [r8, #28]
   Local_Vector_Components = MCM_Trig_Functions(hVolAngle);
- 800233e:	9005      	str	r0, [sp, #20]
- 8002340:	4603      	mov	r3, r0
+ 8002340:	9005      	str	r0, [sp, #20]
+ 8002342:	4603      	mov	r3, r0
   theta_ab = (int16_t)(hVolAngle - (int16_t)(30 * (int32_t)HALL_M1._Super.DPPConvFactor / 360));
- 8002342:	483a      	ldr	r0, [pc, #232]	; (800242c <TSK_HighFrequencyTask+0x19c>)
-  alpha_tmp = (int32_t)(2 * amp * ((int32_t)Local_Vector_Components.hCos) / 3);
- 8002344:	4f3a      	ldr	r7, [pc, #232]	; (8002430 <TSK_HighFrequencyTask+0x1a0>)
-  theta_ab = (int16_t)(hVolAngle - (int16_t)(30 * (int32_t)HALL_M1._Super.DPPConvFactor / 360));
+ 8002344:	4839      	ldr	r0, [pc, #228]	; (800242c <TSK_HighFrequencyTask+0x19c>)
  8002346:	fb80 1002 	smull	r1, r0, r0, r2
  800234a:	17d2      	asrs	r2, r2, #31
  800234c:	ebc2 0260 	rsb	r2, r2, r0, asr #1
- 8002350:	f8b8 0000 	ldrh.w	r0, [r8]
+ 8002350:	8838      	ldrh	r0, [r7, #0]
   theta_bc = hVolAngle;
- 8002354:	f8b8 8000 	ldrh.w	r8, [r8]
+ 8002352:	f8b7 8000 	ldrh.w	r8, [r7]
   alpha_tmp = (int32_t)(2 * amp * ((int32_t)Local_Vector_Components.hCos) / 3);
+ 8002356:	4f36      	ldr	r7, [pc, #216]	; (8002430 <TSK_HighFrequencyTask+0x1a0>)
  8002358:	f644 6120 	movw	r1, #20000	; 0x4e20
   theta_ab = (int16_t)(hVolAngle - (int16_t)(30 * (int32_t)HALL_M1._Super.DPPConvFactor / 360));
  800235c:	1a80      	subs	r0, r0, r2
@@ -5549,7 +5547,7 @@ __weak uint8_t TSK_HighFrequencyTask(void)
  8002396:	f8bd 8012 	ldrh.w	r8, [sp, #18]
   // Valphabeta.alpha = -5000;
   // Valphabeta.beta = 8660;
-  Set_Rotating_Voltage(10, 10000, &Valphabeta);
+  Set_Rotating_Voltage(1000, 10000, &Valphabeta);
   Vqd = Covert_Phases2LL(10000);
 
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
@@ -5559,12 +5557,12 @@ __weak uint8_t TSK_HighFrequencyTask(void)
  80023a2:	4603      	mov	r3, r0
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
  80023a4:	9905      	ldr	r1, [sp, #20]
- 80023a6:	6828      	ldr	r0, [r5, #0]
+ 80023a6:	6830      	ldr	r0, [r6, #0]
   Ull.q = (int16_t)((Volt_tmp * sin_ab) >> 15);
- 80023a8:	f24d 25e5 	movw	r5, #53989	; 0xd2e5
- 80023ac:	fb18 f805 	smulbb	r8, r8, r5
+ 80023a8:	f24d 26e5 	movw	r6, #53989	; 0xd2e5
+ 80023ac:	fb18 f806 	smulbb	r8, r8, r6
   Ull.d = (int16_t)((Volt_tmp * sin_bc) >> 15);
- 80023b0:	fb13 f525 	smultb	r5, r3, r5
+ 80023b0:	fb13 f626 	smultb	r6, r3, r6
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
  80023b4:	f000 f97c 	bl	80026b0 <PWMC_SetPhaseVoltage>
  80023b8:	4601      	mov	r1, r0
@@ -5576,24 +5574,24 @@ __weak uint8_t TSK_HighFrequencyTask(void)
   FOCVars[M1].Iqd = Iqd;
  80023be:	9b00      	ldr	r3, [sp, #0]
   FOCVars[M1].Valphabeta = Valphabeta;
- 80023c0:	f8a6 901a 	strh.w	r9, [r6, #26]
+ 80023c0:	f8a4 901a 	strh.w	r9, [r4, #26]
   Ull.q = (int16_t)((Volt_tmp * sin_ab) >> 15);
  80023c4:	f348 38cf 	sbfx	r8, r8, #15, #16
   Ull.d = (int16_t)((Volt_tmp * sin_bc) >> 15);
- 80023c8:	f345 35cf 	sbfx	r5, r5, #15, #16
+ 80023c8:	f346 36cf 	sbfx	r6, r6, #15, #16
   if (hFOCreturn == MC_DURATION)
  80023cc:	2901      	cmp	r1, #1
   FOCVars[M1].Ialphabeta = Ialphabeta;
- 80023ce:	e9c6 0200 	strd	r0, r2, [r6]
+ 80023ce:	e9c4 0200 	strd	r0, r2, [r4]
   FOCVars[M1].Vqd = Vqd;
- 80023d2:	f8a6 8016 	strh.w	r8, [r6, #22]
- 80023d6:	8335      	strh	r5, [r6, #24]
+ 80023d2:	f8a4 8016 	strh.w	r8, [r4, #22]
+ 80023d6:	8326      	strh	r6, [r4, #24]
   FOCVars[M1].Valphabeta = Valphabeta;
- 80023d8:	83b7      	strh	r7, [r6, #28]
+ 80023d8:	83a7      	strh	r7, [r4, #28]
   FOCVars[M1].hElAngle = hElAngle;
- 80023da:	8434      	strh	r4, [r6, #32]
+ 80023da:	8425      	strh	r5, [r4, #32]
   FOCVars[M1].Iqd = Iqd;
- 80023dc:	60f3      	str	r3, [r6, #12]
+ 80023dc:	60e3      	str	r3, [r4, #12]
   if (hFOCreturn == MC_DURATION)
  80023de:	d011      	beq.n	8002404 <TSK_HighFrequencyTask+0x174>
   GLOBAL_TIMESTAMP++;
@@ -5625,19 +5623,19 @@ __weak uint8_t TSK_HighFrequencyTask(void)
  8002408:	f7ff fb76 	bl	8001af8 <MCI_FaultProcessing>
  800240c:	e7e8      	b.n	80023e0 <TSK_HighFrequencyTask+0x150>
  800240e:	bf00      	nop
- 8002410:	200000e0 	.word	0x200000e0
- 8002414:	200007a0 	.word	0x200007a0
- 8002418:	20000770 	.word	0x20000770
- 800241c:	2000034c 	.word	0x2000034c
- 8002420:	20000348 	.word	0x20000348
- 8002424:	20000344 	.word	0x20000344
- 8002428:	2000002c 	.word	0x2000002c
+ 8002410:	200007a0 	.word	0x200007a0
+ 8002414:	20000770 	.word	0x20000770
+ 8002418:	2000034c 	.word	0x2000034c
+ 800241c:	20000348 	.word	0x20000348
+ 8002420:	20000344 	.word	0x20000344
+ 8002424:	2000002c 	.word	0x2000002c
+ 8002428:	2000079e 	.word	0x2000079e
  800242c:	2aaaaaab 	.word	0x2aaaaaab
  8002430:	55555556 	.word	0x55555556
  8002434:	20002730 	.word	0x20002730
  8002438:	20000364 	.word	0x20000364
  800243c:	20000744 	.word	0x20000744
- 8002440:	2000079e 	.word	0x2000079e
+ 8002440:	200000e0 	.word	0x200000e0
 
 08002444 <TSK_SafetyTask_PWMOFF>:
  * @param  bMotor Motor reference number defined

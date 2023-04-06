@@ -823,7 +823,7 @@ inline uint16_t FOC_CurrControllerM1(void)
   //  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
   // Valphabeta.alpha = -5000;
   // Valphabeta.beta = 8660;
-  Set_Rotating_Voltage(10, 10000, &Valphabeta);
+  Set_Rotating_Voltage(1000, 10000, &Valphabeta);
   Vqd = Covert_Phases2LL(10000);
 
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
