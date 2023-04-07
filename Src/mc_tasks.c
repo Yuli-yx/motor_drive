@@ -61,6 +61,7 @@
 #define VBUS_TEMP_ERR_MASK (MC_OVER_VOLT | MC_UNDER_VOLT | MC_OVER_TEMP)
 /* Private variables----------------------------------------------------------*/
 
+
 static FOCVars_t FOCVars[NBR_OF_MOTORS];
 
 static PWMC_Handle_t *pwmcHandle[NBR_OF_MOTORS];
@@ -823,11 +824,11 @@ inline uint16_t FOC_CurrControllerM1(void)
   //  Valphabeta = MCM_Rev_Park(Vqd, hElAngle);
   // Valphabeta.alpha = -5000;
   // Valphabeta.beta = 8660;
-  Set_Rotating_Voltage(1000, 10000, &Valphabeta);
-  Vqd = Covert_Phases2LL(10000);
+  Set_Rotating_Voltage(10, 10000, &Valphabeta);
+  //Vqd = Covert_Phases2LL(10000);
 
   hCodeError = PWMC_SetPhaseVoltage(pwmcHandle[M1], Valphabeta);
-
+  Vqd.q = vol_a;
   FOCVars[M1].Vqd = Vqd;
   FOCVars[M1].Iab = Iab;
   FOCVars[M1].Ialphabeta = Ialphabeta;

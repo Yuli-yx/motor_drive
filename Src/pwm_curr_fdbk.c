@@ -29,6 +29,8 @@
 #include "mc_math.h"
 #include "mc_type.h"
 
+
+int16_t vol_a;
 /** @addtogroup MCSDK
   * @{
   */
@@ -297,6 +299,8 @@ __weak uint16_t PWMC_SetPhaseVoltage(PWMC_Handle_t *pHandle, alphabeta_t Valfa_b
     pHandle->CntPhA = (uint16_t)(MAX(wTimePhA, 0));
     pHandle->CntPhB = (uint16_t)(MAX(wTimePhB, 0));
     pHandle->CntPhC = (uint16_t)(MAX(wTimePhC, 0));
+
+    vol_a = pHandle->CntPhA;
 
     if (1U == pHandle->DTTest)
     {

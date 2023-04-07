@@ -54,7 +54,7 @@
 
 /* Private defines -----------------------------------------------------------*/
 
-#define NULL_PTR_CHECK_HALL_SPD_POS_FDB
+//#define NULL_PTR_CHECK_HALL_SPD_POS_FDB
 
 /* Lower threshold to reques a decrease of clock prescaler */
 #define LOW_RES_THRESHOLD ((uint16_t)0x5500U)

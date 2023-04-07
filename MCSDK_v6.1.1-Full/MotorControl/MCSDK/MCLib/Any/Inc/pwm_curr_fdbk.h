@@ -55,8 +55,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 
-extern int16_t vol_a;
-
 /** @brief PWM & Current Sensing component handle type */
 typedef struct PWMC_Handle PWMC_Handle_t;
 
