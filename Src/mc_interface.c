@@ -1311,6 +1311,18 @@ __weak alphabeta_t MCI_GetValphabeta(MCI_Handle_t *pHandle)
 }
 
 /**
+ * @brief It returns the stator voltage PWM reference. In FOC mode, 
+ * it should be in the shape of a sinusoid or saddle.
+ * 
+ * @param pHandle Pointer on the component instance to work on.
+ * @return uvw_t stator voltage PWM reference.
+ */
+uvw_t MCI_GetVout(MCI_Handle_t *pHandle)
+{
+  return (pHandle->pFOCVars->Voltage_UVW);
+}
+
+/**
   * @brief  It returns the rotor electrical angle actually used for reference
   *         frame transformation
   * @param  pHandle Pointer on the component instance to work on.

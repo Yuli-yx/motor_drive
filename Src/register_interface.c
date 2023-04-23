@@ -28,6 +28,7 @@
 #include "mcpa.h"
 #include "mc_configuration_registers.h"
 
+
 static PID_Handle_t *pPIDSpeed[NBR_OF_MOTORS] = { &PIDSpeedHandle_M1 };
 static HALL_Handle_t *pHallSensor[NBR_OF_MOTORS] = {&HALL_M1};
 
@@ -221,6 +222,11 @@ uint8_t RI_SetReg (uint16_t dataID, uint8_t * data, uint16_t *size, int16_t data
         uint16_t regdata16 = *(uint16_t *)data; //cstat !MISRAC2012-Rule-11.3
         switch (regID)
         {
+          case MC_REG_VOUT_U:
+          {
+
+            break;
+          }
           case MC_REG_SPEED_KP:
           {
             PID_SetKP(pPIDSpeed[motorID], (int16_t)regdata16);
@@ -310,6 +316,7 @@ uint8_t RI_SetReg (uint16_t dataID, uint8_t * data, uint16_t *size, int16_t data
             MCI_SetCurrentReferences(pMCIN,currComp);
             break;
           }
+          case MC_REG_VOUT_U:
           case MC_REG_V_Q:
           case MC_REG_V_D:
           case MC_REG_V_ALPHA:
@@ -708,6 +715,13 @@ uint8_t RI_GetReg (uint16_t dataID, uint8_t * data, uint16_t *size, int16_t free
               *regdata16 = MCI_GetValphabeta(pMCIN).beta;
               break;
             }
+
+            case MC_REG_VOUT_U:
+            {
+              *regdata16 = MCI_GetVout(pMCIN).u;
+              break;
+            }
+
             case MC_REG_HALL_EL_ANGLE:
             {
               //cstat !MISRAC2012-Rule-11.3
@@ -1087,6 +1101,12 @@ __weak uint8_t RI_GetPtrReg(uint16_t dataID, void **dataPtr)
       {
         switch (regID)
         {
+
+          case MC_REG_VOUT_U:
+          {
+            *dataPtr = &(pMCIN->pFOCVars->Voltage_UVW.u);
+            break;
+          }
           case MC_REG_I_A:
           {
             *dataPtr = &(pMCIN->pFOCVars->Iab.a);

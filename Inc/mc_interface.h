@@ -205,6 +205,8 @@ float MCI_GetTeref_F( MCI_Handle_t * pHandle );
 int16_t MCI_GetPhaseCurrentAmplitude( MCI_Handle_t * pHandle );
 int16_t MCI_GetPhaseVoltageAmplitude( MCI_Handle_t * pHandle );
 void MCI_Clear_Iqdref( MCI_Handle_t * pHandle );
+
+uvw_t MCI_GetVout(MCI_Handle_t *pHandle)
 /**
   * @}
   */

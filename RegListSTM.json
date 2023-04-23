@@ -1,0 +1,9 @@
+{
+    "Id": 112,
+    "'Voltage_U":"MC_REG_VOLTAGE_U",
+    "Description": "Output voltage pwm reference at U phase.",
+    "Type": "F16",
+    "Unit": "new register Unit",
+    "Access": "RW",
+    "UpdateFrequency": "HighFrequency"
+}

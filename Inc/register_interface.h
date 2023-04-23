@@ -184,6 +184,7 @@
 #define  MC_REG_BEMF_U                 ((109 << ELT_IDENTIFIER_POS) | TYPE_DATA_16BIT )
 #define  MC_REG_BEMF_V                 ((110 << ELT_IDENTIFIER_POS) | TYPE_DATA_16BIT )
 #define  MC_REG_BEMF_W                 ((111 << ELT_IDENTIFIER_POS) | TYPE_DATA_16BIT )
+#define  MC_REG_VOUT_U                 ((112 << ELT_IDENTIFIER_POS) | TYPE_DATA_16BIT )
 
 /* TYPE_DATA_32BIT registers definition */
 #define  MC_REG_FAULTS_FLAGS           ((0  << ELT_IDENTIFIER_POS) | TYPE_DATA_32BIT )

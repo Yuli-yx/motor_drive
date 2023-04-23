@@ -1,5 +1,10 @@
 {
     "stm32-for-vscode.openOCDPath": false,
     "stm32-for-vscode.makePath": false,
-    "stm32-for-vscode.armToolchainPath": false
+    "stm32-for-vscode.armToolchainPath": false,
+    "files.associations": {
+        "*.txt": "cmake",
+        "compare": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

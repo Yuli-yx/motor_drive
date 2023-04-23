@@ -32,6 +32,7 @@ extern "C" {
 
 
 /* Exported defines ------------------------------------------------------------*/
+extern uvw_t Voltage_out;
 
 #define SECTOR_1  0U
 #define SECTOR_2  1U

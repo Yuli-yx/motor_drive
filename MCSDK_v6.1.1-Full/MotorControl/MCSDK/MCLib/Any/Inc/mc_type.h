@@ -167,6 +167,15 @@ typedef struct
   int16_t beta;
 } alphabeta_t;
 
+
+ typedef struct
+{
+  int16_t u;
+  int16_t v;
+  int16_t w;
+} uvw_t;
+
+
 /* ACIM definitions start */
 typedef struct 
 {
@@ -287,6 +296,7 @@ typedef struct
   uint16_t hCodeError;          /**< @brief Error Code */
   CurrRefSource_t bDriveInput;  /**< @brief Specifies whether the current reference source must be
                                   *         #INTERNAL or #EXTERNAL*/
+  uvw_t Voltage_UVW;            /**< @brief Phase voltage on stator output frame UVW */                               
 } FOCVars_t, *pFOCVars_t;
 
 /**
